@@ -10,12 +10,14 @@ static const char dmenufont[]       = "monospace:size=12";
 static const char col_gray1[]       = "#282828";
 static const char col_gray2[]       = "#689d6a";
 static const char col_gray3[]       = "#ebdbb2";
-static const char col_gray4[]       = "#fe8019";
+static const char col_gray4[]       = "#fabd2f";
+static const char col_gray5[]       = "#3c3836";
 static const char col_cyan[]        = "#d65d0e";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeSel]  = { col_gray4, col_gray5,  col_cyan  },
 };
 
 /* tagging */
@@ -39,14 +41,16 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 #include "layouts.c"
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
-	{ "HHH",      grid },
+	{ "tiling",      tile },    /* first entry is default */
+	{ "floating",	NULL },    /* no layout function means floating behavior */
+	{ "mono",      monocle },
+	{ "grid",      grid },
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+//#define MODKEY Mod1Mask // Alt is mod key
+#define MODKEY Mod4Mask // Windows Key as a Mod Key
+
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -58,15 +62,27 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", "gnome-termial", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-l", "11", "-c", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *termcmd[]  = { "st", NULL };
+static const char *webbrowser[] = { "firefox", NULL };
+static const char *surfbrowser[] = { "surf", NULL };
+static const char *filemanager[] = { "pcmanfm", NULL };
+static const char *pulsemixer[] = { "st", "-e", "pulsemixer", NULL };
+static const char *nmtui[] = { "st", "-e", "nmtui", NULL };
+
+
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
+	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd}   },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd}    },
+	{ MODKEY,                       XK_w,      spawn,          {.v = webbrowser} },
+	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = surfbrowser}}, 
+	{ MODKEY,                       XK_e,      spawn,          {.v = filemanager}},
+	{ MODKEY,                       XK_a,      spawn,          {.v = pulsemixer }},
+	{ MODKEY,                       XK_c,      spawn,          {.v = nmtui}      },
+	{ MODKEY,                       XK_b,      togglebar,      {0} }, 
+	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } }, 
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
@@ -74,9 +90,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+	{ MODKEY,             		XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} }, //is it necessary?
+	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} }, 
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
