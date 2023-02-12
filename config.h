@@ -20,7 +20,7 @@ static int swallowfloating    = 1;        /* 1 means swallow floating windows by
 static int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 0;        /* 0 means bottom bar */
-static char *fonts[]          = { "Hack:size=10", "JoyPixels:pixelsize=10:antialias=true:autohint=true"  };
+static char *fonts[]          = { "Hack:size=12", "JoyPixels:pixelsize=12:antialias=true:autohint=true"  };
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
@@ -68,12 +68,13 @@ static int nmaster     = 1;    /* number of clients in master area */
 static int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 #define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
 #include "vanitygaps.c"
+
+/* First layout is default */
 static const Layout layouts[] = {
 	/* symbol     arrange function */
- 	{ "[tiling]",	tile },			/* Default: Master on left, slaves on right */
-	{ "[bstack]",	bstack },		/* Master on top, slaves on bottom */
-
 	{ "[spiral]",	spiral },		/* Fibonacci spiral */
+ 	{ "[tiling]",	tile },			/* Master on left, slaves on right */
+	{ "[bstack]",	bstack },		/* Master on top, slaves on bottom */
 	{ "[dwindle]",	dwindle },		/* Decreasing in size right and leftward */
 
 	{ "[deck]",	deck },			/* Master on left, slaves in monocle-like mode on right */
@@ -173,9 +174,9 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_e,		spawn,		SHCMD("pcmanfm") },
 	/*{ MODKEY,			XK_r,		spawn,		SHCMD("nautilus") },*/
 	{ MODKEY|ShiftMask,		XK_r,		spawn,		SHCMD(TERMINAL " -e htop") },
-	{ MODKEY,			XK_t,		setlayout,	{.v = &layouts[0]} }, /* tile */
-	{ MODKEY|ShiftMask,		XK_t,		setlayout,	{.v = &layouts[1]} }, /* bstack */
-	{ MODKEY,			XK_y,		setlayout,	{.v = &layouts[2]} }, /* spiral */
+	{ MODKEY,			XK_t,		setlayout,	{.v = &layouts[1]} }, /* tile */
+	{ MODKEY|ShiftMask,		XK_t,		setlayout,	{.v = &layouts[2]} }, /* bstack */
+	{ MODKEY,			XK_y,		setlayout,	{.v = &layouts[0]} }, /* spiral */
 	{ MODKEY|ShiftMask,		XK_y,		setlayout,	{.v = &layouts[3]} }, /* dwindle */
 	{ MODKEY,			XK_u,		setlayout,	{.v = &layouts[4]} }, /* deck */
 	{ MODKEY|ShiftMask,		XK_u,		setlayout,	{.v = &layouts[5]} }, /* monocle */
@@ -290,8 +291,11 @@ static Key keys[] = {
 	{ 0, XF86XK_TouchpadToggle,	spawn,		SHCMD("(synclient | grep 'TouchpadOff.*1' && synclient TouchpadOff=0) || synclient TouchpadOff=1") },
 	{ 0, XF86XK_TouchpadOff,	spawn,		SHCMD("synclient TouchpadOff=1") },
 	{ 0, XF86XK_TouchpadOn,		spawn,		SHCMD("synclient TouchpadOff=0") },
-	{ 0, XF86XK_MonBrightnessUp,	spawn,		SHCMD("xbacklight -inc 10") },
-	{ 0, XF86XK_MonBrightnessDown,	spawn,		SHCMD("xbacklight -dec 10") },
+	// small brithtness steps for smoother regulation
+	{ 0, XF86XK_MonBrightnessUp,	spawn,		SHCMD("brightnessctl set 4+") },
+	{ 0, XF86XK_MonBrightnessDown,	spawn,		SHCMD("brightnessctl set 4-") },
+	//{ 0, XF86XK_MonBrightnessUp,	spawn,		SHCMD("xbacklight -inc 10") },
+	//{ 0, XF86XK_MonBrightnessDown,	spawn,		SHCMD("xbacklight -dec 10") },
 
 	{ MODKEY|ControlMask,           XK_y,      	spawn,     SHCMD(TERMINAL " -e ytfzf -St") },
 
