@@ -3110,20 +3110,25 @@ main(int argc, char *argv[])
 		die("dwm: cannot get xcb connection\n");
 	checkotherwm();
 	XrmInitialize();
-	load_xresources();
-	loadxrdb();
 	setup();
+	runautostart();
+
+	loadxrdb();
+	load_xresources();
+	xrdb(NULL);
+	runAutostart();
+
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
-	runAutostart();
-	runautostart();
-	run();
+		run();
 	if(restart) execvp(argv[0], argv);
 	cleanup();
 	XCloseDisplay(dpy);
+
+
 	return EXIT_SUCCESS;
 }
 
